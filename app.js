@@ -1,13 +1,29 @@
-// Тоглогчийн ээлжийг хадгалах хувьсагч
-var activePlayer   = 0;
+var isGameOver;
+
+var activePlayer;
+
+var scores;
+
+var roundScore;
+
+var diceDom = document.querySelector(".dice");
+
+initGame();
+// document.querySelector('.dice').style.display = "none";
+
+function initGame(){
+
+    isNewGame = true;
+    // Тоглогчийн ээлжийг хадгалах хувьсагч
+activePlayer   = 0;
 
 
 // Тоглогчдын цуглуулсан оноог хадгалах хувьсагч
-var scores = [0, 0];
+scores = [0, 0];
 
 
 // Тоглогчийн ээлжиндээ цуглуулж байгаа оноог хадгалах хувьсагч
-var roundScore = 0;
+roundScore = 0;
 
 
 // Шооны талуудын оноог random-оор үүсгэнэ.
@@ -25,14 +41,26 @@ window.document.getElementById('score-1').textContent = 0;
 window.document.getElementById('current-0').textContent = 0;
 window.document.getElementById('current-1').textContent = 0;
 
-var diceDom = document.querySelector(".dice");
+document.getElementById('name-0').textContent = "player-1";
+document.getElementById('name-1').textContent = "player-2";
 
-// document.querySelector('.dice').style.display = "none";
+document.querySelector('.player-0-panel').classList.remove("winner");
+document.querySelector('.player-1-panel').classList.remove("winner");
+
+document.querySelector('.player-0-panel').classList.remove("active");
+document.querySelector('.player-1-panel').classList.remove("active");
+
+document.querySelector('.player-0-panel').classList.add("active");
 
 diceDom.style.display = "none";
+}
 
-document.querySelector('.btn-roll').addEventListener("click",function shooShid(){
-    var diceNumber = Math.floor(Math.random() * 6) +1;
+
+
+document.querySelector('.btn-roll').addEventListener("click",function(){
+    
+    if(isNewGame){
+        var diceNumber = Math.floor(Math.random() * 6) +1;
     diceDom.style.display = "block";
     diceDom.src ="dice-" + diceNumber + ".png";
 
@@ -53,40 +81,47 @@ document.querySelector('.btn-roll').addEventListener("click",function shooShid()
         // }
 
     }
+    }else{
+        alert("togloom duuslaa")
+    }
 
     // alert('Shoo buulaa : ' + diceNumber)
 });
 
 
-document.querySelector('.btn-hold').addEventListener("click", function(){
+document.querySelector('.btn-hold').addEventListener("click", function() {
 
+    if(isNewGame){
+        scores[activePlayer] = scores[activePlayer] + roundScore
 
-
-    scores[activePlayer] = scores[activePlayer] + roundScore
-
-    document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
-
-    if(scores[activePlayer] >= 100){
-
-        document.getElementById("name-" + activePlayer).textContent = "WINNER !!!"
-
-        document.querySelector(".player-" + activePlayer + "-panel").classList.add("winner");
+        document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
+    
+        if(scores[activePlayer] >= 10){
+    
+            isNewGame = false;
+    
+            document.getElementById("name-" + activePlayer).textContent = "WINNER !!!"
+    
+            document.querySelector(".player-" + activePlayer + "-panel").classList.add("winner");
+            
+            document.querySelector(".player-" + activePlayer + "-panel").classList.remove("active");
+        }else{
+    
+            nextswitchPlayer();
+    
+        }
+    
         
-        document.querySelector(".player-" + activePlayer + "-panel").classList.remove("active");
+    
+        // roundScore = 0;
+    
+        // document.getElementById('current-' + activePlayer).textContent = "0";
+    
+        
+    
     }else{
-
-        nextswitchPlayer();
-
+        alert("togloom duustsan bna golgoo")
     }
-
-    
-
-    // roundScore = 0;
-
-    // document.getElementById('current-' + activePlayer).textContent = "0";
-
-    
-
 })
 
 
@@ -101,7 +136,7 @@ function nextswitchPlayer(){
     document.querySelector('.player-1-panel').classList.toggle('active');
 
 
-    diceDom.style.display = "none";
+    // diceDom.style.display = "none";
 
 }
 
@@ -114,4 +149,7 @@ function nextswitchPlayer(){
 // console.log('Шоо :' + diceNumber);
 
 
-document.querySelector('btn-new')
+document.querySelector('.btn-new').addEventListener('click', initGame)
+
+
+
